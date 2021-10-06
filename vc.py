@@ -5,18 +5,23 @@ for i in range(1,5):
     fileName = "graphs/vc-exact_" + str(i).zfill(3) + ".gr"
     file = open(fileName, "r")
 
-    nVertices = -1
-    nEdges = -1
+    firstLine = file.readline()
+    nVertices = int(firstLine.split(' ')[2])
+    nEdges = int(firstLine.split(' ')[3])
 
-    firstLine = True
+
+    adjVertices = []
+    for i in range(nVertices):
+        adjVertices.append([])
+
     for line in file.readlines():
         
         arr = line.split(' ')
 
-        if (firstLine):
-            firstLine = False
-            nVertices = arr[2]
-            nEdges = arr[3]
+        adjVertices[int(arr[0])-1].append(int(arr[1])-1)
+        adjVertices[int(arr[1])-1].append(int(arr[0])-1)
 
-    print(nEdges)
-    print(nVertices)
+    print(adjVertices)
+
+
+
