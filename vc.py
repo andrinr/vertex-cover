@@ -11,8 +11,12 @@ for i in range(1,5):
 
 
     adjVertices = []
+    edges = []
+    visited = []
+
     for i in range(nVertices):
         adjVertices.append([])
+        visited.append(False)
 
     for line in file.readlines():
         
@@ -21,7 +25,26 @@ for i in range(1,5):
         adjVertices[int(arr[0])-1].append(int(arr[1])-1)
         adjVertices[int(arr[1])-1].append(int(arr[0])-1)
 
-    print(adjVertices)
+        edges.append([ int(arr[0])-1, int(arr[1])-1])
+
+    for i in range(nEdges):
+
+        u = edges[i][0]
+        v = edges[i][1]
+
+        if not visited[u]:
+
+            for adj in adjVertices[u]:
+
+                if not visited[adj]:
+
+                    visited[u] = True
+                    visited[v] = True
+
+                    break
+
+    
+    for i in range(nVertices):
 
 
 
