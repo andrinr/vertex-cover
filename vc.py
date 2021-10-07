@@ -1,9 +1,15 @@
 
+import json
+import random
 
-for i in range(1,5):
+output = {}
 
-    fileName = "graphs/vc-exact_" + str(i).zfill(3) + ".gr"
-    file = open(fileName, "r")
+for i in range(1,201):
+    print(i)
+
+    directory = "graphs/"
+    fileName = "vc-exact_" + str(i).zfill(3) + ".gr"
+    file = open(directory + fileName, "r")
 
     firstLine = file.readline()
     nVertices = int(firstLine.split(' ')[2])
@@ -27,24 +33,30 @@ for i in range(1,5):
 
         edges.append([ int(arr[0])-1, int(arr[1])-1])
 
-    for i in range(nEdges):
+    indexList = list(range(nVertices))
+    random.shuffle(indexList)
 
-        u = edges[i][0]
-        v = edges[i][1]
+    for i in indexList:
 
-        if not visited[u]:
+        if not visited[i]:
 
-            for adj in adjVertices[u]:
+            visited[i] = True
 
-                if not visited[adj]:
+            for adj in adjVertices[i]:
+                visited[adj] = True
 
-                    visited[u] = True
-                    visited[v] = True
 
-                    break
-
-    
+    visitedList = []
     for i in range(nVertices):
+        if visited[i]:
+            visitedList.append(i)
+    
+    output[fileName] = visitedList
+
+with open('data.json', 'w') as outfile:
+    json.dump(output, outfile)
+            
+
 
 
 
