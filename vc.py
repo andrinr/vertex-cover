@@ -4,9 +4,18 @@ import random
 
 output = {}
 
-for i in range(1,201):
+threesholds = []
+
+for line in open("threesholds.txt", "r"):
+    threesholds.append(int(line.split(' ')[1]))
+
+nPass = 0
+
+total = 200
+for i in range(1,total, 2):
     print(i)
 
+    ### READ DATA
     directory = "graphs/"
     fileName = "vc-exact_" + str(i).zfill(3) + ".gr"
     file = open(directory + fileName, "r")
@@ -15,44 +24,61 @@ for i in range(1,201):
     nVertices = int(firstLine.split(' ')[2])
     nEdges = int(firstLine.split(' ')[3])
 
-
-    adjVertices = []
+    ### BUILD GRAPH
+    adjEdges = []
     edges = []
-    visited = []
+    covered = [False] * nEdges
+    inVertexCover = [False] * nVertices
 
-    for i in range(nVertices):
-        adjVertices.append([])
-        visited.append(False)
+    for j in range(nVertices):
+        adjEdges.append([])
 
     for line in file.readlines():
         
         arr = line.split(' ')
 
-        adjVertices[int(arr[0])-1].append(int(arr[1])-1)
-        adjVertices[int(arr[1])-1].append(int(arr[0])-1)
+        adjEdges[int(arr[0])-1].append(len(edges))
+        adjEdges[int(arr[1])-1].append(len(edges))
 
-        edges.append([ int(arr[0])-1, int(arr[1])-1])
+        edges.append([int(arr[0])-1, int(arr[1])-1])
 
-    indexList = list(range(nVertices))
+
+    ### VC ALGO
+    indexList = list(range(nEdges))
     random.shuffle(indexList)
 
-    for i in indexList:
+    for j in indexList:
 
-        if not visited[i]:
+        if covered[j]:
+            continue
 
-            visited[i] = True
+        u = edges[j][0]
+        v = edges[j][1]
 
-            for adj in adjVertices[i]:
-                visited[adj] = True
+        inVertexCover[u] = True
+        inVertexCover[v] = True
 
+        covered[j] = True
 
-    visitedList = []
-    for i in range(nVertices):
-        if visited[i]:
-            visitedList.append(i)
+        for adj in adjEdges[u]:
+            covered[adj] = True
+
+        for adj in adjEdges[v]:
+            covered[adj] = True
+
+    vertexCover = []
+    for j in range(0, nVertices):
+        if inVertexCover[j]:
+            vertexCover.append(j)
+
+    nPass += len(vertexCover) < threesholds[int((i-1)/2)]
+    print(int((i-1) / 2))
     
-    output[fileName] = visitedList
+    output[fileName] = vertexCover
+    print(len(vertexCover) < threesholds[int((i-1)/2)])
+    print(len(vertexCover))
 
+print("Passed: ", nPass, " / ", total)
 with open('data.json', 'w') as outfile:
     json.dump(output, outfile)
             
