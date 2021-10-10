@@ -1,6 +1,5 @@
 
 import json
-import random
 import vc
 
 output = {}
@@ -26,11 +25,11 @@ for i in range(1,total, 2):
     nEdges = int(firstLine.split(' ')[3])
 
     ### BUILD GRAPH
-    adjEdges = []
+    adjList = []
     edges = []
 
     for j in range(nVertices):
-        adjEdges.append([])
+        adjList.append([])
 
     for line in file.readlines():
         
@@ -39,21 +38,34 @@ for i in range(1,total, 2):
         u = int(arr[0])-1
         v = int(arr[1])-1
 
-        adjEdges[u].append(len(edges))
-        adjEdges[v].append(len(edges))
+        adjList[u].append(v)
+        adjList[v].append(u)
 
         edges.append([u,v])
 
+    vertexCover = vc.getVertexCover(adjList)
 
-    vertexCover = vc.getVertexCover(nEdges, nVertices, adjEdges, edges)
+    ### TEST
+    nPass += len(vertexCover) <= threesholds[int((i-1)/2)]
+    covered = [False] * nVertices
 
-    nPass += len(vertexCover) < threesholds[int((i-1)/2)]
-    
+    for j in range(len(vertexCover)):
+        covered[vertexCover[j]] = True
+
+    for u, v in edges:
+        if not covered[u] and not covered[v]:
+            print("Mistake detected")
+            break
+
+    ### OUTPUT
+    for j in range(len(vertexCover)):
+        vertexCover[j] += 1
+
     output[fileName] = vertexCover 
 
-    print(len(vertexCover), "/",threesholds[int((i-1)/2)], "/", nVertices)
+    print(len(vertexCover), "/", threesholds[int((i-1)/2)], "/", nVertices)
 
-print("Passed: ", nPass, " / ", total)
+print("Passed: ", nPass, " / ", total/2)
 with open('data.json', 'w') as outfile:
     json.dump(output, outfile)
             
