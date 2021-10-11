@@ -69,7 +69,7 @@ for i in range(1,total, 2):
     print(len(vertexCover), "/", threesholds[int((i-1)/2)], "/", nVertices)
 
 print("Passed: ", nPass, " / ", total/2)
-with open('data.json', 'w') as outfile:
+with open('results.json', 'w') as outfile:
     json.dump(output, outfile)
             
 

@@ -30,7 +30,7 @@ def getVertexCover(adjList):
         for adj in adjList[index]:
             if not visited[adj] and not edgeCounts[adj] == 0:
                 edgeCounts[adj] -= 1
-                maxHeap.fix(maxHeap.iIndices[adj])
+                maxHeap.fix(maxHeap.extToInt[adj])
 
     vertexCover.sort()
     return vertexCover
