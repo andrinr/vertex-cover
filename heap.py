@@ -1,4 +1,5 @@
 import sys
+import math
 
 # max heap
 class heap:
@@ -6,6 +7,7 @@ class heap:
     def __init__(self, dataArray):
         self.eData = dataArray
         self.eIndices = []
+        self.iIndices = []
 
     # Get maximum value, in this case at index 0
     def getMax(self):
@@ -13,6 +15,7 @@ class heap:
 
     def insert(self, index):
         self.eIndices.append(index)
+        self.iIndices.append(index)
         self.bubbleUp(len(self.eIndices)-1)
 
     def delete(self, index):
@@ -20,15 +23,16 @@ class heap:
             self.eIndices.pop()
             return
 
-        self.eIndices[index] = self.eIndices.pop()
+        # Put last element to index
+        self.swap(len(self.eIndices)-1, index)
+        # Delete last element
+        self.eIndices.pop()
+
+        self.fix(index)
 
     def fix(self, index):
         self.bubbleDown(index)
         self.bubbleUp(index)
-
-    def fixAll(self):
-        for i in range(len(self.eIndices)):
-            self.fix(i)
         
     def pop(self):
 
@@ -41,10 +45,12 @@ class heap:
         return len(self.eIndices) > 0
 
     def bubbleUp(self, index):
+        #print(self.eIndices)
         if index == 0:
             return
 
-        parentIndex = int(index / 2)
+        parentIndex = math.floor((index - 1) / 2)
+        #print(parentIndex)
 
         if (self.eData[self.eIndices[parentIndex]] < self.eData[self.eIndices[index]]):
             self.swap(index, parentIndex)
@@ -71,8 +77,9 @@ class heap:
                 
     # Swap helper function
     def swap(self, a, b):
-        tmpIndex  = self.eIndices[b]
+        tmpIndex = self.eIndices[b]
         self.eIndices[b] = self.eIndices[a]
         self.eIndices[a] = tmpIndex
 
-
+        self.iIndices[self.eIndices[a]] = a
+        self.iIndices[self.eIndices[b]] = b

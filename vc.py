@@ -1,4 +1,3 @@
-import random
 from heap import heap
 
 def getVertexCover(adjList):
@@ -18,32 +17,20 @@ def getVertexCover(adjList):
 
     vertexCover = []
     while(maxHeap.isPopulated()):
-        
-        #for i in range(len(maxHeap.eIndices)):
-        #    print(edgeCounts[maxHeap.eIndices[i]], end=", ")
-        #print()
-        #print(maxHeap.eIndices)
 
         index, value = maxHeap.pop()
         edgeCounts[index] = 0
 
-        #print("index", index, "value", value)
         if (value == 0):
-            break
+            continue
 
         vertexCover.append(index)
         visited[index] = True
 
         for adj in adjList[index]:
-            if not visited[adj]:
-                #print(adj)
+            if not visited[adj] and not edgeCounts[adj] == 0:
                 edgeCounts[adj] -= 1
-            
-        maxHeap.fixAll()
+                maxHeap.fix(maxHeap.iIndices[adj])
 
     vertexCover.sort()
     return vertexCover
-
-#print(getVertexCover([[1,2,4],[0,3,4],[0,3,5],[1,2],[0,1],[2]]))
-#print(getVertexCover([[1, 2, 5], [0, 2, 4], [0, 1, 3, 5], [2, 5], [1, 5, 6], [0, 2, 3, 4, 6], [4, 5]]))
-#print(getVertexCover([[1, 2, 5], [0, 2, 4], [0, 1, 3, 5], [2, 5], [1, 5, 6], [0, 2, 3, 4, 6], [4, 5]]))

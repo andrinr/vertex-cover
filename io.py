@@ -46,16 +46,19 @@ for i in range(1,total, 2):
     vertexCover = vc.getVertexCover(adjList)
 
     ### TEST
-    nPass += len(vertexCover) <= threesholds[int((i-1)/2)]
     covered = [False] * nVertices
 
     for j in range(len(vertexCover)):
         covered[vertexCover[j]] = True
 
+    mistake = False
     for u, v in edges:
         if not covered[u] and not covered[v]:
-            print("Mistake detected")
+            mistake = True
+            print("mistake :(")
             break
+
+    nPass += (len(vertexCover) <= threesholds[int((i-1)/2)] and not mistake)
 
     ### OUTPUT
     for j in range(len(vertexCover)):
